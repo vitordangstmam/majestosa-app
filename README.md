@@ -1,0 +1,1 @@
+# majestosa-app
