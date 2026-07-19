@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Majestosa</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #1a2d4d, #111f38 70%);
+      color: #f3ead9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+    header {
+      text-align: center;
+      padding: 28px 20px 18px;
+      border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+    }
+    h1 {
+      font-size: 36px;
+      margin: 0;
+      color: #e8cf7a;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+      letter-spacing: 0.5px;
+    }
+    .sub {
+      font-size: 12px;
+      color: #c9a227;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    nav {
+      display: flex;
+      gap: 6px;
+      padding: 0 16px;
+      margin: 16px 0 8px;
+      overflow-x: auto;
+    }
+    nav button {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(201, 162, 39, 0.25);
+      color: #f3ead9;
+      padding: 11px 6px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    nav button.active {
+      background: #c9a227;
+      color: #111f38;
+      border-color: #c9a227;
+    }
+    main {
+      padding: 8px 16px 20px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .card {
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(201, 162, 39, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      font-size: 19px;
+      margin: 0 0 14px;
+      color: #e8cf7a;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      opacity: 0.7;
+      margin: 12px 0 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    input, select {
+      width: 100%;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(201, 162, 39, 0.25);
+      color: #f3ead9;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    input:focus, select:focus {
+      outline: 2px solid #c9a227;
+      outline-offset: 1px;
+    }
+    button {
+      background: linear-gradient(180deg, #e8cf7a, #c9a227);
+      color: #111f38;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+    }
+    button:hover { opacity: 0.9; }
+    .entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .entry span {
+      flex: 1;
+      font-size: 14px;
+    }
+    .entry button {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 11px;
+      margin: 0;
+    }
+    .btn-small {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 11px;
+      margin: 0 2px;
+    }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .grid button { margin: 0; padding: 8px; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
+    th { text-align: left; font-size: 11px; opacity: 0.55; padding: 6px 4px; border-bottom: 1px solid rgba(201, 162, 39, 0.25); }
+    td { padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .empty { text-align: center; padding: 30px 10px; opacity: 0.5; font-size: 13px; }
+    .result { margin-top: 16px; padding-top: 12px; border-top: 1px dashed rgba(201, 162, 39, 0.25); }
+    .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+    .total { border-top: 1px solid rgba(201, 162, 39, 0.25); margin-top: 8px; padding-top: 8px; font-size: 16px; color: #e8cf7a; font-weight: bold; }
+    .podium { display: flex; gap: 8px; margin-top: 12px; }
+    .place { flex: 1; text-align: center; background: rgba(0,0,0,0.2); padding: 12px 6px; border-radius: 8px; }
+    .medal { font-size: 20px; }
+    .amt { color: #e8cf7a; margin-top: 4px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>♛ Majestosa ♛</h1>
+  <div class="sub">Poker Club — Since 2023</div>
+</header>
+
+<div id="login" class="card" style="max-width: 400px; margin: 40px auto; text-align: center;">
+  <h2 style="color: #e8cf7a;">Quem é você?</h2>
+  <input type="text" id="playerName" placeholder="Digita seu nome" autocomplete="off">
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div id="app" style="display: none;">
+  <nav>
+    <button class="tab-btn active" onclick="switchTab('listas')">Listas</button>
+    <button class="tab-btn" onclick="switchTab('calc')">Premiação</button>
+    <button class="tab-btn" onclick="switchTab('ranking')">Ranking</button>
+    <button class="tab-btn" onclick="switchTab('historico')">Histórico</button>
+  </nav>
+
+  <main>
+    <!-- LISTAS -->
+    <div id="listas" class="tab active">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>🎰 Listas da noite</h2>
+          <button class="btn-small" onclick="logout()" style="width: auto; padding: 6px 12px; margin: 0;">sair</button>
+        </div>
+        
+        <div class="grid" id="playerGrid"></div>
+
+        <div style="margin-top: 16px;">
+          <label>Visitante</label>
+          <input type="text" id="visitanteName" placeholder="Nome" autocomplete="off">
+          <div class="grid">
+            <button onclick="addVisitante('buyin')" style="padding: 8px; font-size: 12px; margin: 0;">+ Buy-in</button>
+            <button onclick="addVisitante('rebuy')" style="padding: 8px; font-size: 12px; margin: 0;">+ Rebuy</button>
+            <button onclick="addVisitante('addon')" style="padding: 8px; font-size: 12px; margin: 0;">+ Addon</button>
+          </div>
+        </div>
+
+        <div id="listasContent" style="margin-top: 16px;"></div>
+      </div>
+    </div>
+
+    <!-- PREMIAÇÃO -->
+    <div id="calc" class="tab">
+      <div class="card">
+        <h2>🃏 Calculadora</h2>
+        <label>Jogadores</label>
+        <input type="number" id="numJogadores" placeholder="ex: 10">
+        <label>Buy-in (R$)</label>
+        <input type="number" id="buyIn" placeholder="ex: 50">
+        <label>Taxa limpeza (R$)</label>
+        <input type="number" id="taxaLimpeza" placeholder="ex: 30">
+        <button onclick="calcular()">Calcular</button>
+        <div id="calcResult" class="result" style="display: none;">
+          <div class="row"><span>Arrecadação</span><span id="rArrecadacao">-</span></div>
+          <div class="row"><span>Taxa limpeza</span><span id="rLimpeza">-</span></div>
+          <div class="row"><span>Org (10%)</span><span id="rOrg">-</span></div>
+          <div class="row total"><span>Total premiação</span><span id="rTotal">-</span></div>
+          <div class="podium">
+            <div class="place"><div class="medal">🥇</div><div class="amt" id="p1">-</div></div>
+            <div class="place"><div class="medal">🥈</div><div class="amt" id="p2">-</div></div>
+            <div class="place"><div class="medal">🥉</div><div class="amt" id="p3">-</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RANKING -->
+    <div id="ranking" class="tab">
+      <div class="card">
+        <h2>🏆 Registrar noite</h2>
+        <label>Data (22/07)</label>
+        <input type="text" id="nightDate" placeholder="ex: 22/07">
+        <label>Quarter</label>
+        <select id="nightQuarter">
+          <option value="Q3">3º Trim (Jul-Set)</option>
+          <option value="Q1">1º Trim (Jan-Mar)</option>
+          <option value="Q2">2º Trim (Abr-Jun)</option>
+          <option value="Q4">4º Trim (Out-Dez)</option>
+        </select>
+        
+        <div id="placesInput" style="margin-top: 12px;"></div>
+        <button onclick="salvarNoite()">Salvar noite</button>
+      </div>
+
+      <div class="card">
+        <h2>🥇 Ranking</h2>
+        <select id="rankingQuarter" onchange="loadRanking()">
+          <option value="Q3">3º Trim (Jul-Set)</option>
+          <option value="Q1">1º Trim (Jan-Mar)</option>
+          <option value="Q2">2º Trim (Abr-Jun)</option>
+          <option value="Q4">4º Trim (Out-Dez)</option>
+        </select>
+        <table>
+          <thead><tr><th>#</th><th>Jogador</th><th style="text-align:right;">Pts</th></tr></thead>
+          <tbody id="rankingBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div id="historico" class="tab">
+      <div class="card">
+        <h2>📋 Histórico</h2>
+        <div id="historicoList"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwY5ou04iMW6GtxmkYzvTSnKj_GLk4CI_bYfmFyKpcAXhL_Qx7Ef4gMMEHrFi5ZuWj3/exec";
+const PLAYERS = ['Lilo', 'Poto', 'Thie', 'Dena', 'Vitão', 'Hugo', 'Shadow', 'Vitor', 'Luizo', 'Lowis', 'Denadai', 'Munaro', 'Arian', 'Binho', 'Ariel', 'Ruan', 'Murilo', 'Fafis'];
+const PLACES = [{ label: '1º', pts: 12 }, { label: '2º', pts: 9 }, { label: '3º', pts: 7 }, { label: '4º', pts: 5 }, { label: '5º', pts: 3 }];
+
+let currentPlayer = null;
+
+function login() {
+  const name = document.getElementById('playerName').value.trim();
+  if (!name) return alert('Digita seu nome');
+  currentPlayer = name;
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  buildPlayerGrid();
+  buildPlacesInput();
+  loadListas();
+  loadRanking();
+  loadHistorico();
+}
+
+function logout() {
+  currentPlayer = null;
+  document.getElementById('login').style.display = 'block';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('playerName').value = '';
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function buildPlayerGrid() {
+  const html = PLAYERS.map(p => `
+    <button onclick="addMembro('${p}')" style="margin: 0; padding: 8px; font-size: 12px;">${p}</button>
+  `).join('');
+  document.getElementById('playerGrid').innerHTML = html;
+}
+
+function buildPlacesInput() {
+  const html = PLACES.map((p, i) => `
+    <div style="margin-bottom: 8px;">
+      <label>${p.label} lugar</label>
+      <input type="text" id="place${i}" placeholder="Nome" autocomplete="off">
+    </div>
+  `).join('');
+  document.getElementById('placesInput').innerHTML = html;
+}
+
+function addMembro(nome) {
+  call('addEntry', { tipo: 'buyin', nome }, () => loadListas());
+}
+
+function addVisitante(tipo) {
+  const nome = document.getElementById('visitanteName').value.trim();
+  if (!nome) return alert('Digita o nome');
+  call('addEntry', { tipo, nome }, () => {
+    document.getElementById('visitanteName').value = '';
+    loadListas();
+  });
+}
+
+function togglePago(tipo, nome) {
+  call('togglePago', { tipo, nome }, () => loadListas());
+}
+
+function removeLista(tipo, nome) {
+  call('removeLista', { tipo, nome }, () => loadListas());
+}
+
+function loadListas() {
+  call('getListas', {}, (data) => {
+    let html = '';
+    ['buyin', 'rebuy', 'addon'].forEach(tipo => {
+      const label = { buyin: 'Buy-in', rebuy: 'Rebuy', addon: 'Addon' }[tipo];
+      html += `<h3 style="color: #c9a227; font-size: 13px; margin: 12px 0 8px; text-transform: uppercase; letter-spacing: 1px;">${label}</h3>`;
+      data[tipo].forEach(e => {
+        html += `
+          <div class="entry">
+            <span>${e.nome}</span>
+            <button class="btn-small" onclick="togglePago('${tipo}', '${e.nome}')" style="background: ${e.pago ? '#c9a227' : 'rgba(255,255,255,0.1)'};">
+              ${e.pago ? 'pago ✓' : 'pendente'}
+            </button>
+            <button class="btn-small" onclick="removeLista('${tipo}', '${e.nome}')" style="background: rgba(163,50,74,0.5);">✕</button>
+          </div>
+        `;
+      });
+    });
+    document.getElementById('listasContent').innerHTML = html || '<p class="empty">Ninguém adicionado ainda</p>';
+  });
+}
+
+function salvarNoite() {
+  const data = document.getElementById('nightDate').value || 'sem data';
+  const quarter = document.getElementById('nightQuarter').value;
+  
+  PLACES.forEach((p, i) => {
+    const nome = document.getElementById('place' + i).value.trim();
+    if (nome) {
+      call('addRanking', { jogador: nome, quarter, pts: p.pts }, () => {});
+      call('addHistorico', { data, lugar: i + 1, jogador: nome, pts: p.pts }, () => {});
+    }
+  });
+  
+  alert('Noite salva!');
+  PLACES.forEach((_, i) => document.getElementById('place' + i).value = '');
+  loadRanking();
+  loadHistorico();
+}
+
+function loadRanking() {
+  const quarter = document.getElementById('rankingQuarter').value;
+  call('getRanking', { quarter }, (data) => {
+    const html = data.length === 0 ? '<tr><td colspan="3" class="empty" style="border: none;">Ninguém pontuou ainda</td></tr>' :
+      data.map((r, i) => `<tr><td>${i + 1}º</td><td>${r.jogador}</td><td style="text-align: right; font-weight: bold;">${r.pts}</td></tr>`).join('');
+    document.getElementById('rankingBody').innerHTML = html;
+  });
+}
+
+function loadHistorico() {
+  call('getHistorico', {}, (data) => {
+    const grouped = {};
+    data.forEach(h => {
+      if (!grouped[h.data]) grouped[h.data] = [];
+      grouped[h.data].push(h);
+    });
+    let html = '';
+    Object.keys(grouped).reverse().forEach(data => {
+      html += `<h3 style="color: #c9a227; font-size: 13px; margin: 12px 0 6px;">${data}</h3>`;
+      grouped[data].forEach(h => {
+        html += `<div style="font-size: 12px; padding: 3px 0;"><span>${h.lugar}º — ${h.jogador}</span> <span style="float: right;">${h.pts} pts</span></div>`;
+      });
+    });
+    document.getElementById('historicoList').innerHTML = html || '<p class="empty">Sem histórico</p>';
+  });
+}
+
+function calcular() {
+  const n = parseFloat(document.getElementById('numJogadores').value) || 0;
+  const bi = parseFloat(document.getElementById('buyIn').value) || 0;
+  const lp = parseFloat(document.getElementById('taxaLimpeza').value) || 0;
+  
+  const arr = n * bi;
+  const org = (arr - lp) * 0.1;
+  const total = (arr - lp) * 0.9;
+  
+  const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  
+  document.getElementById('rArrecadacao').textContent = fmt(arr);
+  document.getElementById('rLimpeza').textContent = fmt(lp);
+  document.getElementById('rOrg').textContent = fmt(org);
+  document.getElementById('rTotal').textContent = fmt(total);
+  document.getElementById('p1').textContent = fmt(total * 0.5);
+  document.getElementById('p2').textContent = fmt(total * 0.3);
+  document.getElementById('p3').textContent = fmt(total * 0.2);
+  document.getElementById('calcResult').style.display = 'block';
+}
+
+function call(action, params, callback) {
+  const url = SCRIPT_URL + '?action=' + action + '&' + Object.keys(params).map(k => k + '=' + encodeURIComponent(params[k])).join('&');
+  fetch(url).then(r => r.text()).then(text => {
+    try {
+      callback(JSON.parse(text));
+    } catch(e) {
+      callback(text);
+    }
+  }).catch(e => console.error(e));
+}
+</script>
+
+</body>
+</html>
